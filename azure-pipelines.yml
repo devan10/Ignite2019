@@ -28,7 +28,7 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
@@ -39,10 +39,27 @@ steps:
 
 
 - task: CopyFiles@2
+  displayName: Copy Files 
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)\src\PokerLeagueManager.Utilties\bin\Debug'
-    Contents: '**'
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: |
+      **\*.Commands.WebApi.zip
+      **\*.Events.WebApi.zip
+      **\*.Queries.WebApi.zip
     TargetFolder: '$(build.artifactstagingdirectory)'
+    flattenFolders: true
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)\deploy'
+    Contents: '**'
+    TargetFolder: '$(build.artifactstagingdirectory)\deploy'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(BuildSourcesDirectory)\src\PokerLeagueManagement\bin'
+    Contents: '**'
+    TargetFolder: '$(build.artifactstagingdirectory)\utility'
 
 
 - task: PublishBuildArtifacts@1
